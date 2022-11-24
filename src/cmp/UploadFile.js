@@ -35,7 +35,20 @@ const UploadFile = ({ bucketName, pathPrefix = "", onRefresh }) => {
       const {
         name:fileName
       } = file
-      const fileReader = new FileReader();
+
+      let fileReaderStream = require('filereader-stream')
+      let readStream = fileReaderStream(file )
+
+      await mc.putObject(bucketName, `${targetPrefix ? targetPrefix : ""}${fileName}`, readStream, {
+        "Content-Type": file.type,
+        "X-Amz-Meta-App": "SPH-REACT-JS"
+      });
+
+      showSuccess(`Successfully uploaded ${fileName}`)
+      onRefresh?.(true)
+
+
+     /* const fileReader = new FileReader();
       fileReader.onload = async function(evt) {
         if (evt.target.readyState === FileReader.DONE) {
           // Get the unsigned 8 bit int8Array (ie Uint8Array) of the 600 bytes (this looks like '[119,80,78,71...]'):
@@ -53,7 +66,7 @@ const UploadFile = ({ bucketName, pathPrefix = "", onRefresh }) => {
         showError(`Unable to upload file ${fileName}`)
         onRefresh?.(false)
       };
-      fileReader.readAsArrayBuffer(file);
+      fileReader.readAsArrayBuffer(file);*/
 
     });
 
