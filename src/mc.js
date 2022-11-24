@@ -9,7 +9,7 @@ const mc = new minio.Client(/*{
     {
             endPoint: "localhost",
             useSSL: false,
-            port: 22000,
+            port: 20001,
             accessKey: "minio",
             secretKey: "minio123"
     }

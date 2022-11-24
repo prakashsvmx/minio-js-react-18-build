@@ -3,15 +3,22 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.10.4",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
+    "dayjs": "^1.11.5",
+    "lodash": "^4.17.21",
+    "minio": "7.0.29",
+    "pretty-bytes": "^6.0.0",
+    "primeicons": "^6.0.1",
+    "primereact": "^8.7.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4",
     "react-router": "^5.2.0",
-    "react-router-dom": "^5.2.0"
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "^5.0.1",
+    "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "GENERATE_SOURCEMAP=false react-app-rewired start",
@@ -38,13 +45,8 @@
     ]
   },
   "devDependencies": {
-    "process": "^0.11.10",
-    "react-app-rewired": "^2.2.1",
-    "stream-browserify": "^3.0.0",
-    "stream-http": "^3.2.0",
-    "timers-browserify": "^2.0.12",
-    "url": "^0.11.0",
     "assert": "^2.0.0",
+    "autoprefixer": "^10.4.13",
     "block-stream2": "^2.1.0",
     "browser-or-node": "^1.3.0",
     "browserify-fs": "^1.0.0",
@@ -56,8 +58,16 @@
     "https-browserify": "^1.0.0",
     "ipaddr.js": "^2.0.1",
     "json-stream": "^1.0.0",
-    "minio": "7.0.29",
     "os-browserify": "^0.3.0",
-    "path-browserify": "^1.0.1"
+    "path-browserify": "^1.0.1",
+    "postcss": "^8.4.19",
+    "prettier": "2.8.0",
+    "process": "^0.11.10",
+    "react-app-rewired": "^2.2.1",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
+    "tailwindcss": "^3.2.4",
+    "timers-browserify": "^2.0.12",
+    "url": "^0.11.0"
   }
 }

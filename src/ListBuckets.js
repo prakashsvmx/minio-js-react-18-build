@@ -1,55 +1,49 @@
-import React, {useEffect, useState} from "react"
+import React, { useEffect, useState } from "react";
 import mc from "./mc";
+
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import { Button } from "primereact/button";
+
 const ListBuckets = () => {
 
-    const [buckets, setBuckets] = useState([]);
+  const [buckets, setBuckets] = useState([]);
 
-    const getBuckets = async () => {
-        const res = await mc.listBuckets();
-        setBuckets(res);
-    };
+  const getBuckets = async () => {
+    const res = await mc.listBuckets();
+    setBuckets(res);
+  };
 
-    useEffect(() => {
-        getBuckets();
-    }, []);
+  useEffect(() => {
+    getBuckets();
+  }, []);
 
-   
-
+  const bucketsTableHeader=() => {
     return (
-        <div className="container mx-auto mt-5 ">
+      <div className="flex justify-content-between align-items-center">
+        <h5 className="m-0">Buckets</h5>
+      </div>
+    )
+  }
 
-            <div className="flex items-start justify-between mb-2">
-                <div>
-                <h2>List of Buckets </h2>
-                </div>
 
-                <button  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" >
-                    Create Bucket
-                </button>
-            </div>
+  return (
+      <div className="flex flex-1">
+      <DataTable value={buckets}   width="100%" style={{flex:1, border:"1px solid #CECEEC" , borderRadius:"5px"}} header={bucketsTableHeader}>
+        <Column field="name"  width={"80%"} header="Name" body={(rowData)=>{
+          return <a className="text-pink-700 underline hover:text-blue-800" href={`/buckets/${rowData.name}`} rel="noopener">{rowData.name} </a>;
 
-                <div className="flex flex-col border border-gray-100  p-5">
-                <table className="table-fixed">
-                    <thead>
-                    <tr className="text-purple-700">
-                        <th className="text-left w-16">S.No</th>
-                        <th className="text-left ">Bucket Name</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {buckets.map((bucket, index) => {
-                        return (<tr key={bucket.name}  className=" border border-gray-100">
-                                <td className="p-2">{index + 1}</td>
-                                <td>
-                                    <a href={`/list-objects/${bucket.name}`} className={"text-green-500 hover:underline"}>{bucket.name}</a>
-                                </td>
-                            </tr>
-                        )
-                    })}
-                    </tbody>
-                </table>
-            </div>
-        </div>)
-}
+        }}/>
+        <Column field="creationDate" header="Created At" style={{width:"220px"}} body={(rowData=>{
+          return <span>
+            {new Date(rowData.creationDate).toLocaleString()}
+          </span>
+        })}></Column>
 
-export default ListBuckets
+      </DataTable>
+      </div>
+
+  );
+};
+
+export default ListBuckets;
