@@ -4,22 +4,18 @@ import mc from "../mc";
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 import { Toast } from 'primereact/toast';
+import useToast from "../cmp/useToast";
+let fileReaderStream = require('filereader-stream')
 
 const UploadFile = ({ bucketName, pathPrefix = "", onRefresh }) => {
 
-  const toast = useRef(null);
   const [value, setValue] = useState([]);
 
   const handleChange = (event) => {
     setValue(event.target.files);
   };
 
-  const showSuccess = (summary="", detail="") => {
-    toast.current.show({severity:'success', summary: summary, detail:detail, life: 3000});
-  }
-  const showError = (summary="", detail="")=> {
-    toast.current.show({severity:'error', summary: summary, detail:detail, life: 3000});
-  }
+  const [toast, showError, showSuccess] = useToast()
 
   // eslint-disable-next-line no-unused-vars
   const [targetPrefix, setTargetPrefix] = useState(pathPrefix);
@@ -36,7 +32,6 @@ const UploadFile = ({ bucketName, pathPrefix = "", onRefresh }) => {
         name:fileName
       } = file
 
-      let fileReaderStream = require('filereader-stream')
       let readStream = fileReaderStream(file )
 
       await mc.putObject(bucketName, `${targetPrefix ? targetPrefix : ""}${fileName}`, readStream, {
