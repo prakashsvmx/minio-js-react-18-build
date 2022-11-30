@@ -17,6 +17,21 @@ const ListBuckets = () => {
     setBuckets(res);
   };
 
+
+  const removeBucket =async (node) => {
+    try {
+      await mc.removeBucket(node.name)
+
+      showSuccess("Successfully removed bucket")
+    }catch (er){
+      showError("Tested Error:",er.message)
+      console.log("showError")
+    }
+
+    await getBuckets()
+
+  }
+
   useEffect(() => {
     getBuckets();
   }, []);
@@ -33,19 +48,9 @@ const ListBuckets = () => {
 
   const actionTemplate = (node, column) => {
     return <div className="flex gap-2">
-      <button type="button" className="bg-white hover:bg-gray-200 flex items-center p-1 rounded" onClick={async () => {
-        try {
-          await mc.removeBucket(node.name)
-
-          showSuccess("Successfully removed bucket")
-        }catch (er){
-          showError("Tested Error:",er.message)
-          console.log("showError")
-        }
-
-        await getBuckets()
-
-      }}>
+      <button type="button" className="bg-white hover:bg-gray-200 flex items-center p-1 rounded" onClick={()=>{
+        removeBucket(node)}
+      }>
         <i className=" pi pi-trash"></i>
       </button>
 
