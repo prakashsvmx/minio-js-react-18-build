@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import mc from "./mc";
+import mc from "../util/mc";
 
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import NewBucket from "./cmp/NewBucket";
+import NewBucket from "./NewBucket";
 import { Toast } from "primereact/toast";
-import useToast from "./cmp/useToast";
+import useToast from "./useToast";
 
 const ListBuckets = () => {
 

@@ -5,7 +5,7 @@ import { useForm, Controller } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
 import { Checkbox } from "primereact/checkbox";
 import { classNames } from "primereact/utils";
-import mc from "../mc";
+import mc from "../util/mc";
 import { Toast } from "primereact/toast";
 import useToast from "../cmp/useToast";
 

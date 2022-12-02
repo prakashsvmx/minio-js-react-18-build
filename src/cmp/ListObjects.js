@@ -1,7 +1,7 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from "react";
 import { TreeTable } from "primereact/treetable";
 import { Column } from "primereact/column";
-import mc from "../mc";
+import mc from "../util/mc";
 import prettyBytes from "pretty-bytes";
 import { orderBy } from "lodash";
 import history from "../history";
@@ -43,7 +43,9 @@ const listObjectsOfPrefix = (bName, pathName, keyPrefix = "") => {
 
         const { name: objectName = "", prefix } = chunk;
 
-        const displayPathName = objectName.indexOf("/") !== -1 ? objectName.substring(pathName.lastIndexOf("/") + 1) : objectName;
+        //TODO Start After.
+        //const displayPathName = objectName.indexOf("/") !== -1 ? objectName.substring(pathName.lastIndexOf("/") + 1) : objectName;
+        const displayPathName = objectName.indexOf("/") !== -1 ? objectName.substring(pathName.lastIndexOf("/") ) : objectName;
         let nodeInfo;
         if (!prefix) {
           nodeInfo = getAsNode({
@@ -109,13 +111,6 @@ const ListObjects = forwardRef((props, ref) => {
 
   };
 
-  const loadChildren = async (bucketName, path, keyPrefix) => {
-    let objList = await listObjectsOfPrefix(bucketName, `${path}`, keyPrefix);
-    let sortedList = orderBy(objList, ["leaf", "name"], ["asc", "desc"]);
-    return sortedList;
-
-  };
-
 
   useImperativeHandle(ref, () => ({
     refresh(b=bucketName,p=path) {
@@ -135,7 +130,7 @@ const ListObjects = forwardRef((props, ref) => {
   useEffect(() => {
     loadBucketObjects(bucketName, path);
     //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bucketName, path,ref]);
+  }, [bucketName, path]);
 
 
   const onExpand = async (event) => {
@@ -146,39 +141,8 @@ const ListObjects = forwardRef((props, ref) => {
           key: nodePath
         } = {}
       } = event;
-      setLoading(true);
 
-      setLoading(false);
-      let lazyNode = { ...event.node };
-      const children = await loadChildren(bucketName, nodePath);
-
-      lazyNode.children = children;
-
-      let update = (id, children) => obj => {
-        if (obj.key === id) {
-          obj.children = children;
-          return true;
-        } else if (obj.children)
-          return obj.children.some(update(id, children));
-      };
-
-      const segments = nodePath.split("/");
-      const topLevelKey = `/${segments[1]}/`;// e.g: /TestPrefix/
-      const topLevelNode = objects.find((o) => o.key === topLevelKey);
-      if (topLevelNode) {
-        objects.forEach(update(nodePath, children));
-      }
-
-      let _nodes = objects.map(node => {
-        if (node.key === segments[0]) {
-          node = topLevelNode;
-        }
-        return node;
-      });
-
-      setLoading(false);
-      setObjects(_nodes);
-
+      history.push(`/buckets/${bucketName}?path=${nodePath.substring(0,nodePath.length)}`)
     }
   };
 
@@ -190,20 +154,14 @@ const ListObjects = forwardRef((props, ref) => {
   const actionTemplate = (node, column) => {
     return <div className="flex gap-2">
       <button type="button" className="bg-white hover:bg-gray-200 flex items-center p-1 rounded"  onClick={()=>{
-      console.log(node)
-        onDelete?.({node:node
-        })
+        onDelete?.({node:node})
       }
       }>
         <i className=" pi pi-trash"></i>
       </button>
       {node.leaf?null: <button type="button" className="bg-white hover:bg-gray-200 flex items-center p-1 rounded"  onClick={()=>{
-        console.log(node)
-
         let path=node.key
-
-        console.log("::Path::",path)
-        history.push(`/browse/${bucketName}?view=${path.substring(0,node.key.length)}`)
+        history.push(`/buckets/${bucketName}?path=${path.substring(0,path.length)}`)
       }
       }>
         <i className=" pi pi-window-maximize"></i>

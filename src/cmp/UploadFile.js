@@ -1,6 +1,6 @@
 import React , { useRef } from "react";
 import { useState } from "react";
-import mc from "../mc";
+import mc from "../util/mc";
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 import { Toast } from 'primereact/toast';

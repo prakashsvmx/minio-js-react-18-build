@@ -2,26 +2,12 @@ import React from "react";
 
 import history from "./history";
 import { Router, Route, Switch } from "react-router";
-import ListBuckets from "./ListBuckets";
-import BrowseBucket from "./BrowseBucket";
+import ListBuckets from "./cmp/ListBuckets";
+import BrowseBucket from "./cmp/BrowseBucket";
 import AppLayout from "./Layout/AppLayout";
 import "./App.css"
-import ListObjects from "./cmp/ListObjects";
-import { useParams } from "react-router-dom";
+import BrowsePath from "./cmp/BrowsePath";
 
-const BrowsePath = ()=>{
-
-
-  const {
-    bucketName,
-    prefixPah
-  } = useParams()
-
-
-  console.log(bucketName, prefixPah)
-
-  return <ListObjects bucketName={bucketName} path={prefixPah} ref={null} />
-}
 
 const App = () => {
   return (
@@ -30,7 +16,6 @@ const App = () => {
         <Switch>
           <Route exact path={["/", "/buckets"]} component={ListBuckets} />
           <Route exact path={["/buckets/:bucketName"]} component={BrowseBucket} />
-          <Route exact path={["/buckets/:bucketName/:prefixPath"]} component={BrowsePath} />
         </Switch>
     </AppLayout>
     </Router>
