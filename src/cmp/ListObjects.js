@@ -133,35 +133,32 @@ const ListObjects = forwardRef((props, ref) => {
   }, [bucketName, path]);
 
 
-  const openPreView = (path) =>{
 
+  const openPreView= (path, contentType) =>{
     setLoading(true)
-    let file
+    let streamChunksBuf=[]
     let countChunks=0
     mc.getObject(bucketName, path, function(err, dataStream) {
       if (err) {
         console.log("err", err);
       }
       dataStream.on("data", function(chunk) {
-
-        console.log(chunk)
         countChunks+=1
-        file = new Blob([chunk], { type: "application/pdf" });
+        streamChunksBuf.push(Buffer.from(chunk));
       });
       dataStream.on("end", function() {
         setLoading(false)
-        const fileURL = URL.createObjectURL(file);
+        console.log("No of Chunks:  Chunks:", countChunks, contentType)
+        const pdfFile = new Blob( [Buffer.concat(streamChunksBuf)], { type: contentType });
+        const fileURL = URL.createObjectURL(pdfFile);
         window.open(fileURL, "_blank");
-        console.log("Opening Preview", countChunks);
         URL.revokeObjectURL(fileURL)
-
       });
       dataStream.on("error", function(err) {
         console.log(err);
       });
     });
   }
-
   const openPreviewWithSignedUrl = async (path) =>{
     setLoading(true)
     const signedUrl = await mc.presignedGetObject(bucketName, path)
@@ -216,7 +213,7 @@ const ListObjects = forwardRef((props, ref) => {
       </button>
       }
       {fileType?  <button type="button" className="bg-white hover:bg-gray-200 flex items-center p-1 rounded"  onClick={()=>{
-       openPreView(node.key)
+       openPreView(node.key, fileType)
       }
       }>
         <i className=" pi pi-download"></i>
