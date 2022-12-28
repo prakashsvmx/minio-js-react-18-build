@@ -133,6 +133,42 @@ const ListObjects = forwardRef((props, ref) => {
   }, [bucketName, path]);
 
 
+  const openPreView = (path) =>{
+
+    setLoading(true)
+    let file
+    let countChunks=0
+    mc.getObject(bucketName, path, function(err, dataStream) {
+      if (err) {
+        console.log("err", err);
+      }
+      dataStream.on("data", function(chunk) {
+
+        console.log(chunk)
+        countChunks+=1
+        file = new Blob([chunk], { type: "application/pdf" });
+      });
+      dataStream.on("end", function() {
+        setLoading(false)
+        const fileURL = URL.createObjectURL(file);
+        window.open(fileURL, "_blank");
+        console.log("Opening Preview", countChunks);
+        URL.revokeObjectURL(fileURL)
+
+      });
+      dataStream.on("error", function(err) {
+        console.log(err);
+      });
+    });
+  }
+
+  const openPreviewWithSignedUrl = async (path) =>{
+    setLoading(true)
+    const signedUrl = await mc.presignedGetObject(bucketName, path)
+    setLoading(false)
+    window.open(signedUrl, "_blank");
+  }
+
   const onExpand = async (event) => {
 
     if (!event.node.children) {
@@ -152,6 +188,18 @@ const ListObjects = forwardRef((props, ref) => {
 
 
   const actionTemplate = (node, column) => {
+
+    let fileType = "";
+    if (node?.data?.metadata?.Items?.length) {
+      //let fileType=""
+      const {
+        Value: mimeType = ""
+      } = node?.data?.metadata?.Items.find((mt) => {
+        return mt.Key === "content-type";
+      }) || {};
+
+      fileType = mimeType;
+    }
     return <div className="flex gap-2">
       <button type="button" className="bg-white hover:bg-gray-200 flex items-center p-1 rounded"  onClick={()=>{
         onDelete?.({node:node})
@@ -165,7 +213,21 @@ const ListObjects = forwardRef((props, ref) => {
       }
       }>
         <i className=" pi pi-window-maximize"></i>
-      </button>}
+      </button>
+      }
+      {fileType?  <button type="button" className="bg-white hover:bg-gray-200 flex items-center p-1 rounded"  onClick={()=>{
+       openPreView(node.key)
+      }
+      }>
+        <i className=" pi pi-download"></i>
+      </button>:null}
+
+      {fileType?  <button type="button" className="bg-white hover:bg-gray-200 flex items-center p-1 rounded"  onClick={()=>{
+        openPreviewWithSignedUrl(node.key)
+      }
+      }>
+        <i className=" pi pi-link"></i>
+      </button>:null}
     </div>;
   }
 
@@ -197,13 +259,13 @@ const ListObjects = forwardRef((props, ref) => {
         const date = lmd ? new Date(rowData.data.lastModified).toLocaleString() : "";
 
         return <div className="flex flex-col ">
-          <div className="flex gap-2"><span className="text-sm">{rowData.data.size}</span><span className="hidden text-sm">{fileType}</span></div>
+          <div className="flex gap-2"><span className="text-sm">{rowData.data.size}</span><span className=" text-sm">{fileType}</span></div>
           <div className="text-sm">{date}</div>
         </div>;
 
       }}></Column>
 
-      <Column body={actionTemplate} style={{ textAlign: 'center', width: '80px' }} />
+      <Column body={actionTemplate} style={{ textAlign: 'center', width: '100px' }} />
 
 
     </TreeTable>
