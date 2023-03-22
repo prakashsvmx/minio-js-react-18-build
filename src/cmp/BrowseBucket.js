@@ -8,7 +8,7 @@ import {Toast} from "primereact/toast";
 
 const BrowseBucket = () => {
 
-    const {bucketName, ...restParams} = useParams();
+    const {bucketName} = useParams();
 
 
     const {search} = useLocation();
@@ -37,11 +37,6 @@ const BrowseBucket = () => {
         }
     }
 
-    const refreshChildren = () => {
-        if (childRef.current) {
-            childRef.current.onExpand();
-        }
-    }
 
     const onDelete = async (event) => {
 

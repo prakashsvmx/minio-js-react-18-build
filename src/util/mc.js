@@ -9,11 +9,18 @@ const mc = new minio.Client(/*{
     {
             endPoint: "localhost",
             useSSL: false,
-            port: 20001,
+            port: 22000,
             accessKey: "minio",
-            secretKey: "minio123",
-            userAgent:window.navigator.userAgent
-    }
+            secretKey: "minio123"
+    },
+ /* {
+    endPoint:"localhost",
+    useSSL: false,
+    port: 20001,
+    accessKey: "my-service-account",
+    secretKey: "my-svc-secret-key",
+    userAgent:window.navigator.userAgent
+  }*/
     //Assume role example::
     //https://github.com/minio/minio/blob/master/docs/sts/assume-role.md#testing-an-example-with-assume-rolego
 
@@ -29,6 +36,5 @@ const mc = new minio.Client(/*{
     }*/
     
 );
-
 
 export default mc

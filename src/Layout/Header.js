@@ -14,12 +14,6 @@ const  Header = (props) =>{
                         <a className="text-white opacity-70 hover:opacity-100 duration-300" href="/">Buckets</a>
                     </li>
 
-                    <li>
-                        <a className="text-white opacity-70 hover:opacity-100 duration-300" href="#">About</a>
-                    </li>
-                    <li>
-                        <a className="text-white opacity-70 hover:opacity-100 duration-300" href="#">Contact</a>
-                    </li>
                 </ul>
 
 

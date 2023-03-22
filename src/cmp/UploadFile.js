@@ -1,4 +1,4 @@
-import React , { useRef } from "react";
+import React from "react";
 import { useState } from "react";
 import mc from "../util/mc";
 import { Dialog } from "primereact/dialog";
@@ -15,7 +15,7 @@ const UploadFile = ({ bucketName, pathPrefix = "", onRefresh }) => {
     setValue(event.target.files);
   };
 
-  const [toast, showError, showSuccess] = useToast()
+  const [toast, , showSuccess] = useToast()
 
   // eslint-disable-next-line no-unused-vars
   const [targetPrefix, setTargetPrefix] = useState(pathPrefix);

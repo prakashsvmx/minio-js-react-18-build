@@ -6,7 +6,6 @@ import ListBuckets from "./cmp/ListBuckets";
 import BrowseBucket from "./cmp/BrowseBucket";
 import AppLayout from "./Layout/AppLayout";
 import "./App.css"
-import BrowsePath from "./cmp/BrowsePath";
 
 
 const App = () => {
