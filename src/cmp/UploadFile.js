@@ -5,6 +5,9 @@ import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 import { Toast } from 'primereact/toast';
 import useToast from "../cmp/useToast";
+const superagent = require('superagent');
+
+
 let fileReaderStream = require('filereader-stream')
 
 const UploadFile = ({ bucketName, pathPrefix = "", onRefresh }) => {
@@ -28,6 +31,56 @@ const UploadFile = ({ bucketName, pathPrefix = "", onRefresh }) => {
     const filesList = Array.from(value);
     filesList.map(async (file) => {
 
+
+
+      const policy = mc.newPostPolicy()
+      policy.setKey('browser-upload-file')
+      policy.setBucket('test-bucket')
+      const expires = new Date()
+      expires.setSeconds(24 * 60 * 60 * 10)
+      policy.setExpires(expires)
+
+      policy.setUserMetaData({
+        key: 'my-value',
+        anotherKey: 'another-value',
+      })
+
+      mc.presignedPostPolicy(policy, (e, data) => {
+        if (e) {
+          console.log('Error...', e.message)
+        }
+
+       const request = superagent
+          .post(data.postURL)
+
+        //send all the returned information back to server
+
+        Object.keys(data.formData).forEach((value)=>{
+          request.field(value, data.formData[value])
+        })
+          request.attach('browser-upload-file', file)
+          .then((err, res) =>{
+
+            showSuccess(`Successfully uploaded ${file.name}`)
+          });
+
+
+/*
+        req.end(function (e) {
+          if (e) {
+            console.log('Error...', e.message)
+          }
+          console.log('Success...')
+          showSuccess(`Successfully uploaded ${file.name}`)
+
+        })
+        req.on('error', (e) => {
+          console.log('Error...', e.message)
+        })*/
+      })
+
+
+      /*
       const {
         name:fileName
       } = file
@@ -37,9 +90,8 @@ const UploadFile = ({ bucketName, pathPrefix = "", onRefresh }) => {
       await mc.putObject(bucketName, `${targetPrefix ? targetPrefix : ""}${fileName}`, readStream, {
         "Content-Type": file.type,
         "X-Amz-Meta-App": "SPH-REACT-JS"
-      });
+      });*/
 
-      showSuccess(`Successfully uploaded ${fileName}`)
       onRefresh?.(true)
 
 
@@ -75,9 +127,12 @@ const UploadFile = ({ bucketName, pathPrefix = "", onRefresh }) => {
     <>
       <Toast ref={toast} />
       <Dialog header="Upload Objects" visible={opened} style={{ width: "50vw" }} onHide={() => setOpened(false)}>
-        <form onSubmit={(event) => {
+        <form
+          encType="multipart/form-data"
+          onSubmit={(event) => {
           event.preventDefault();
           uploadFiles();
+
         }}>
           <div className="flex flex-col gap-3 ">
 
@@ -94,7 +149,7 @@ const UploadFile = ({ bucketName, pathPrefix = "", onRefresh }) => {
                   <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span> or
                     drag and drop</p>
                 </div>
-                <input id="dropzone-file" type="file" multiple className="hidden" onChange={handleChange} />
+                <input id="dropzone-file" type="file"   multiple className="hidden" onChange={handleChange} />
               </label>
             </div>
 
