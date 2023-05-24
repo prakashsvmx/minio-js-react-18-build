@@ -82,6 +82,12 @@ const BrowseBucket = () => {
                 </div>
             </div>
 
+
+            <iframe
+              title={"embedded_console"}
+              src={`http://localhost:9021`}
+
+            />
             <Toast ref={toast}/>
         </Fragment>
     );
