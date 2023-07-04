@@ -13,7 +13,7 @@ try {
       endPoint: "localhost",
       useSSL: false,
       port: 22000,
-      accessKey: "minio",
+      accessKey: "test-user",
       secretKey: "minio123"
     },
     /* {
@@ -47,11 +47,29 @@ mc.setRequestOptions({timeout:500})
 
 
     const removeObjectTest = () => {
-  debugger
-  mc.removeObject("test-bucket", "test", (e, res) => {
-    console.log(e, res)
 
-  })
+
+      const deleteList = [{name:"non-existent"}]
+
+      for(let i=0;i<3; i++){
+        deleteList.push({
+          name:`${i}.txt`
+        })
+      }
+
+      deleteList.splice(2, 0, { name:"does not exist object2"} )
+      deleteList.splice(1108, 0, { name:"does not exist object1110"} )
+
+      console.log(deleteList)
+      mc.removeObjects("test-bucket", deleteList ,(e, res) => {
+
+        if (e) {
+          return console.log(e)
+        }
+        console.log("Success", res)
+// Note : Inspect the res to find out if an object deletion is success or failure.
+
+      })
 }
 mc.traceOn()
 
